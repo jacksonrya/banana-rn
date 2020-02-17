@@ -15,6 +15,7 @@ import * as colors from '@util/colors';
 import {
 	Title,
 	LinkButton,
+	FormImageInput,
 	FormTextInput,
 	SpacerInline,
 	Header,
@@ -80,6 +81,7 @@ export default () => {
 	const [ transportationMethod, setTransportationMethod ] = useState();
 	const [ gender, setGender ] = useState();
 	const [ ethnicity, setEthnicity ] = useState();
+	const [ incomeVerificationImage, setIncomeVerificationImage ] = useState();
 	const [ termsOfService, setTermsOfService ] = useState(false);
 
 	const toggleTermsOfService = () => {
@@ -93,10 +95,11 @@ export default () => {
 		if (!city) { Alert.alert('Please enter your city.'); return; }
 		if (zip.toString().length !== 5) { Alert.alert('Please enter your 5-digit zip code.'); return; }
 		if (!transportationMethod) { Alert.alert('Please select your preferred method of transportation.'); return; }
+		if (!incomeVerificationImage) { Alert.alert('Please add an image to verify your income to continue.'); return; }
 		if (!termsOfService) { Alert.alert('Please read and accept the terms of service to complete your registration.'); return; }
 
 		const statusCode = await register({
-			email, password, street, city, state, zip, transportationMethod, ethnicity, gender,
+			email, password, street, city, state, zip, transportationMethod, ethnicity, gender, incomeVerificationImage,
 		});
 		switch (statusCode) {
 			case (201 || 202): Alert.alert('Registration complete! Please log in to continue.'); navigate('LoginScreen', { email, password }); return;
@@ -246,6 +249,12 @@ export default () => {
 						/>
 					</View>
 				</View>
+
+				<FormImageInput
+					text="Income Verification"
+					image={incomeVerificationImage}
+					setImage={setIncomeVerificationImage}
+				/>
 
 				<SpacerInline height={10} />
 				<View style={styles.checkboxRow}>
