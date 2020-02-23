@@ -35,7 +35,7 @@ export default () => {
 	const [ street, setStreet ] = useState('');
 	const [ state, _setState ] = useState('WA');
 	const [ termsOfService, setTermsOfService ] = useState(false);
-	const [ zip, setZip ] = useState();
+	const [ zip, setZip ] = useState('');
 
 	const toggleTermsOfService = () => setTermsOfService(!termsOfService);
 
@@ -47,7 +47,7 @@ export default () => {
 		if (!licenseVerificationImage) { Alert.alert('Please add an image of your business license to continue.'); return; }
 		if (!street || street.split(' ').length < 3) { Alert.alert('Please enter your street number and name.'); return; }
 		if (!city) { Alert.alert('Please enter your city.'); return; }
-		if (zip.toString().length !== 5) { Alert.alert('Please enter your 5-digit zip code.'); return; }
+		if (!(/^\d{5}$/.test(zip))) { Alert.alert('Please enter a valid 5-digit zip code.'); return; }
 		if (!termsOfService) { Alert.alert('Please read and accept the terms of service to complete your registration.'); return; }
 
 		const statusCode = await register({

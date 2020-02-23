@@ -8,7 +8,7 @@ interface DonorRegisterProps {
 	street: string;
 	city: string;
 	state: string;
-	zip: number;
+	zip: string;
 	licenseVerificationImage: any;
 }
 
@@ -18,7 +18,7 @@ interface ClientRegisterProps {
 	street: string;
 	city: string;
 	state: string;
-	zip: number;
+	zip: string;
 	transportationMethod: string;
 	ethnicity: string;
 	gender: string;
