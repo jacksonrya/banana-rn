@@ -11,6 +11,7 @@ export interface ClientState {
 
 export interface SharedProps {
 	email: string;
+	profile_image_url?: string;
 	password: string;
 	address_street: string;
 	address_city: string;

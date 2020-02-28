@@ -3,6 +3,8 @@ import {
 	Alert,
 	ScrollView,
 	View,
+	Text,
+	Image,
 } from 'react-native';
 import {
 	FormImageInput,
@@ -10,8 +12,11 @@ import {
 	Header,
 	LinkButton,
 	SpacerInline,
-	Title,
+	Icon,
 } from '@elements';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as colors from '@util/colors';
 import useGlobal from '@state';
 import styles from './ProfileScreen.styles';
 
@@ -24,14 +29,16 @@ export default () => {
 
 	const [ editing, setEditing ] = useState(false);
 
+	const [ organizationName, setOrganizationName ] = useState(user.organization_name);
+	// TODO: add profile image to user in state
+	const [ profileImage, setProfileImage ] = useState(user.profile_image_url);
 	const [ email, setEmail ] = useState(user.email);
-	const [ city, setCity ] = useState(user.address_city);
 	const [ licenseVerificationImage, setLicenseVerificationmage ] = useState();
 	const [ licenseNumber, setLicenseNumber ] = useState(user.business_license);
-	const [ organizationName, setOrganizationName ] = useState(user.organization_name);
 	const [ newPassword, setNewPassword ] = useState('');
 	const [ newPasswordConfirmation, setNewPasswordConfirmation ] = useState('');
 	const [ street, setStreet ] = useState(user.address_street);
+	const [ city, setCity ] = useState(user.address_city);
 	const [ state, setState ] = useState(user.address_state);
 	const [ zip, setZip ] = useState(user.address_zip.toString());
 
@@ -63,13 +70,32 @@ export default () => {
 		}
 	};
 
+	const handleImageInputPress = () => {
+
+	};
+
 
 	return (
 		<ScrollView contentContainerStyle={styles.outerContainer}>
 			<View>
 				{/* TODO: Change header height */}
 				<Header showBackButton={false} />
-				{/* <ProfileImage image={image} /> */}
+
+				<View style={styles.header}>
+					<Text style={styles.titleText}>Profile</Text>
+
+					<LinearGradient style={styles.profileImageContainer} colors={[ colors.BANANA_YELLOW, colors.WHITE ]} start={[ 0.5, 0 ]} end={[ 0.5, 1 ]} locations={[ 0.5, 0.5 ]} style={styles.profileImageContainer}>
+						{/* <DynamicImage></DynamicImage> */}
+						<View style={styles.profileImage}>
+							<TouchableWithoutFeedback
+								onPress={handleImageInputPress}
+							>
+								<Icon style={styles.profileImageIcon} name="camera" />
+								<Image style={{}} source={profileImage} />
+							</TouchableWithoutFeedback>
+						</View>
+					</LinearGradient>
+				</View>
 
 				<FormTextInput
 					text="Email"
