@@ -1,6 +1,7 @@
 export { FormImageInput } from './FormImageInput';
 export { FormTextInput } from './FormTextInput';
 export { Header } from './Header';
+export { AvatarHeader } from './AvatarHeader';
 export { Icon } from './Icon';
 export { InputLabel } from './FormTextInput/InputLabel';
 export { LinkButton } from './LinkButton';

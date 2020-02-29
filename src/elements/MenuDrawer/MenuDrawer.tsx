@@ -10,7 +10,9 @@ import { DrawerItems } from 'react-navigation-drawer';
 import { useNavigation } from 'react-navigation-hooks';
 import useGlobal from '@state';
 import { SpacerInline } from '@elements';
+
 import styles from './MenuDrawer.styles';
+
 
 const MenuDrawer = props => {
 	const [ state, actions ] = useGlobal() as any;
@@ -20,6 +22,7 @@ const MenuDrawer = props => {
 
 	return (
 		<ScrollView>
+			{/** TODO: abstract AvatarHeader further to use here? */}
 			<View style={styles.drawerHeader}>
 				<View style={styles.avatar}>
 					<Avatar.Image

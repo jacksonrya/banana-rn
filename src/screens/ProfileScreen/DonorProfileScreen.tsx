@@ -18,6 +18,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as colors from '@util/colors';
 import useGlobal from '@state';
+import { AvatarHeader } from '@elements/AvatarHeader';
 import styles from './ProfileScreen.styles';
 
 
@@ -81,21 +82,7 @@ export default () => {
 				{/* TODO: Change header height */}
 				<Header showBackButton={false} />
 
-				<View style={styles.header}>
-					<Text style={styles.titleText}>Profile</Text>
-
-					<LinearGradient style={styles.profileImageContainer} colors={[ colors.BANANA_YELLOW, colors.WHITE ]} start={[ 0.5, 0 ]} end={[ 0.5, 1 ]} locations={[ 0.5, 0.5 ]} style={styles.profileImageContainer}>
-						{/* <DynamicImage></DynamicImage> */}
-						<View style={styles.profileImage}>
-							<TouchableWithoutFeedback
-								onPress={handleImageInputPress}
-							>
-								<Icon style={styles.profileImageIcon} name="camera" />
-								<Image style={{}} source={profileImage} />
-							</TouchableWithoutFeedback>
-						</View>
-					</LinearGradient>
-				</View>
+				<AvatarHeader height={154} source={profileImage} title="Profile" editable={editing} avatarSize={95} />
 
 				<FormTextInput
 					text="Email"
