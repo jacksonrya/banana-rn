@@ -6,8 +6,8 @@ export default StyleSheet.create({
 		height: 25,
 	},
 	text: {
-		fontFamily: 'open-sans-regular',
-		fontSize: 14,
+		fontFamily: 'open-sans-bold',
+		fontSize: 16,
 		color: colors.NAVY_BLUE,
 	},
 });

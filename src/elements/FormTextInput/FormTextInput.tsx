@@ -16,7 +16,8 @@ interface FormTextInputProps {
 	autoCapitalize?: 'words' | 'sentences' | 'none' | 'characters';
 	inline?: boolean;
 	upperCase?: boolean;
-	disabled?: boolean;
+	disabled?: boolean; // Whether or not the input is locked.
+	editable?: boolean; // Whether or not the field can be changed by the user.
 	style?: StyleProp<TextStyle>;
 }
 
@@ -29,6 +30,7 @@ export default ({
 	inline = false,
 	upperCase = true,
 	disabled = false,
+	editable = true,
 	style,
 }: FormTextInputProps) => (
 	inline
@@ -40,7 +42,7 @@ export default ({
 					<TextInput
 						value={value}
 						onChangeText={setValue}
-						style={[ styles.input, disabled && styles.disabled, style, { textAlign: 'right' } ]}
+						style={[ styles.input, editable && styles.editable, disabled && styles.disabled, style, { textAlign: 'right' } ]}
 						autoCapitalize={autoCapitalize}
 						editable={!disabled}
 					/>
@@ -53,7 +55,7 @@ export default ({
 				<TextInput
 					value={value}
 					onChangeText={setValue}
-					style={[ disabled && styles.disabled, styles.input, style ]}
+					style={[ styles.input, editable && styles.editable, disabled && styles.disabled, style ]}
 					autoCapitalize={autoCapitalize}
 					editable={!disabled}
 				/>
