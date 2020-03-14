@@ -28,6 +28,7 @@ export const MainStack = createStackNavigator(
 	{
 		DashboardScreen,
 		LoginSuccessScreen,
+		ProfileScreen,
 		DonationScreen,
 		QRCodeScannerScreen,
 		ClaimDetailScreen,

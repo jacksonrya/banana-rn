@@ -28,12 +28,12 @@ export default () => {
 
 	const [ city, setCity ] = useState('');
 	const [ email, setEmail ] = useState('');
-	const [ licenseVerificationImage, setLicenseVerificationImage ] = useState();
+	const [ image, setImage ] = useState({} as ImagePicker.ImagePickerResult);
 	const [ license, setLicense ] = useState('');
 	const [ organizationName, setOrganizationName ] = useState('');
 	const [ password, setPassword ] = useState('');
 	const [ street, setStreet ] = useState('');
-	const [ state, _setState ] = useState('WA');
+	const [ state, setState ] = useState('WA');
 	const [ termsOfService, setTermsOfService ] = useState(false);
 	const [ zip, setZip ] = useState('');
 
@@ -44,7 +44,7 @@ export default () => {
 		if (!email.includes('@') || !email.includes('.')) { Alert.alert('Please enter a valid email address.'); return; }
 		if (password.length < 8) { Alert.alert('Please enter a password at least 8 characters long.'); return; }
 		if (license.length !== 9) { Alert.alert('Please enter your 9-digit UBI with no spaces or dashes.'); return; }
-		if (!licenseVerificationImage) { Alert.alert('Please add an image of your business license to continue.'); return; }
+		if (!image) { Alert.alert('Please add an image of your business license to continue.'); return; }
 		if (!street || street.split(' ').length < 3) { Alert.alert('Please enter your street number and name.'); return; }
 		if (!city) { Alert.alert('Please enter your city.'); return; }
 		if (!(/^\d{5}$/.test(zip))) { Alert.alert('Please enter a valid 5-digit zip code.'); return; }
@@ -54,7 +54,7 @@ export default () => {
 			organizationName, email, password, license, street, city, state, zip, termsOfService, licenseVerificationImage,
 		});
 		switch (statusCode) {
-			case (201 || 202): Alert.alert('Registration complete! Please log in to continue.'); navigate('LoginScreen', { email, password }); return;
+			case (200 || 202): Alert.alert('Registration complete! Please log in to continue.'); navigate('LoginScreen', { email, password }); return;
 			case 406: Alert.alert('Error: not accepted'); return;
 			case 500: Alert.alert('Internal server error, please try again later.'); return;
 			default: Alert.alert("Sorry, that didn't work, please try again later."); console.log(statusCode);
@@ -118,7 +118,7 @@ export default () => {
 					<FormTextInput
 						text="State"
 						value={state}
-						setValue={() => { }}
+						setValue={setState}
 						width="15%"
 						autoCapitalize="words"
 					/>

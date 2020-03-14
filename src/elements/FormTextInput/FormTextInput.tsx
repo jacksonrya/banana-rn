@@ -15,6 +15,7 @@ interface FormTextInputProps {
 	width?: number | string;
 	autoCapitalize?: 'words' | 'sentences' | 'none' | 'characters';
 	inline?: boolean;
+	type?: string;
 	upperCase?: boolean;
 	disabled?: boolean; // Whether or not the input is locked.
 	editable?: boolean; // Whether or not the field can be changed by the user.

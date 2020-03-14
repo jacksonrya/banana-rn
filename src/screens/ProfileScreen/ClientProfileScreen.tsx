@@ -27,31 +27,14 @@ import styles from './ProfileScreen.styles';
 export default () => {
 	const { navigate } = useNavigation();
 	const [ _state, actions ] = useGlobal() as any;
-	const { register } = actions;
+	const { updateDonorOrClient } = actions;
 
+	// TODO: Change to enum?
 	const transportationMethods = [
 		'Walk',
 		'Bike',
 		'Public',
 		'Car',
-	];
-
-	const ethnicities = [
-		'Prefer not to say',
-		'American Indian or Alaskan Native',
-		'Asian',
-		'Black or African American',
-		'Hispanic or Latino',
-		'Native Hawaiian/Pacific Islander',
-		'White',
-	];
-
-	const genders = [
-		'Prefer not to say',
-		'Female',
-		'Male',
-		'Non-binary',
-		'Other',
 	];
 
 	const itemizeList = list => list.map(item => ({ label: item, value: item }));
@@ -71,38 +54,40 @@ export default () => {
 		value: null,
 	};
 
-	const [ hidePwd, setHidePwd ] = useState(true);
-	const [ email, setEmail ] = useState('');
-	const [ password, setPassword ] = useState('');
-	const [ street, setStreet ] = useState('');
-	const [ city, setCity ] = useState('');
-	const [ state, setState ] = useState('WA');
-	const [ zip, setZip ] = useState();
-	const [ transportationMethod, setTransportationMethod ] = useState();
-	const [ gender, setGender ] = useState();
-	const [ ethnicity, setEthnicity ] = useState();
-	const [ incomeImage, setIncomeImage ] = useState();
-	const [ termsOfService, setTermsOfService ] = useState(false);
+	const [ editing, setEditing ] = useState(false);
+	const { user } = _state;
 
-	const toggleTermsOfService = () => {
-		setTermsOfService(!termsOfService);
-	};
+	const [ hidePwd, setHidePwd ] = useState(true);
+	const [ email, setEmail ] = useState(user.email);
+	const [ transportationMethod, setTransportationMethod ] = useState(user.transportation_method);
+	const [ password, setPassword ] = useState('');
+	const [ confirmPassword, setConfirmPassword ] = useState('');
+	const [ street, setStreet ] = useState(user.address_street);
+	const [ city, setCity ] = useState(user.address_city);
+	const [ state, setState ] = useState(user.address_state); // TODO: update state to US_State or something
+	const [ zip, setZip ] = useState(user.address_zip.toString()); // TODO: remove toString() ??
 
 	const validateAndSubmit = async () => {
 		if (!email.includes('@') || !email.includes('.')) { Alert.alert('Please enter a valid email address.'); return; }
+		if (password !== confirmPassword) { Alert.alert('Passwords do not match.'); return; }
 		if (password.length < 8) { Alert.alert('Please enter a password at least 8 characters long.'); return; }
 		if (!street || street.split(' ').length < 3) { Alert.alert('Please enter your street number and name.'); return; }
 		if (!city) { Alert.alert('Please enter your city.'); return; }
 		if (zip.toString().length !== 5) { Alert.alert('Please enter your 5-digit zip code.'); return; }
 		if (!transportationMethod) { Alert.alert('Please select your preferred method of transportation.'); return; }
-		if (!incomeImage) { Alert.alert('Please add an image to verify your income to continue.'); return; }
-		if (!termsOfService) { Alert.alert('Please read and accept the terms of service to complete your registration.'); return; }
 
-		const statusCode = await register({
-			email, password, street, city, state, zip, transportationMethod, ethnicity, gender,
+		const statusCode = await updateDonorOrClient({
+			email,
+			password,
+			street,
+			city,
+			state,
+			zip,
+			transportationMethod,
 		});
+
 		switch (statusCode) {
-			case (201 || 202): Alert.alert('Registration complete! Please log in to continue.'); navigate('LoginScreen', { email, password }); return;
+			case (200 || 202): Alert.alert('Profile updated!'); setEditing(false); return;
 			case 406: Alert.alert('Error: not accepted'); return;
 			case 500: Alert.alert('Internal server error, please try again later.'); return;
 			default: Alert.alert("Sorry, that didn't work, please try again later."); console.log(statusCode);
@@ -181,108 +166,76 @@ export default () => {
 						width="33%"
 						autoCapitalize="words"
 						style={styles.input}
+						disabled={!editing}
 					/>
 				</View>
-
-				<InputLabel text="Ethnicity" />
-				<RNPickerSelect
-					value={ethnicity}
-					placeholder={selectPlaceholder}
-					onValueChange={(val, _i) => setEthnicity(val)}
-					textInputProps={{ style: [ styles.input, styles.iconPadding ] }}
-					Icon={() => <ChevronDown />}
-					items={itemizeList(ethnicities)}
-				/>
-
-				<InputLabel text="Ethnicity" />
-				<RNPickerSelect
-					value={ethnicity}
-					placeholder={selectPlaceholder}
-					onValueChange={(val, _i) => setEthnicity(val)}
-					textInputProps={{ style: [ styles.input, styles.iconPadding ] }}
-					Icon={() => <ChevronDown />}
-					items={itemizeList(ethnicities)}
-				/>
-
-				<InputLabel text="Ethnicity" />
-				<RNPickerSelect
-					value={ethnicity}
-					placeholder={selectPlaceholder}
-					onValueChange={(val, _i) => setEthnicity(val)}
-					textInputProps={{ style: [ styles.input, styles.iconPadding ] }}
-					Icon={() => <ChevronDown />}
-					items={itemizeList(ethnicities)}
-				/>
-
-				<InputLabel text="Ethnicity" />
-				<RNPickerSelect
-					value={ethnicity}
-					placeholder={selectPlaceholder}
-					onValueChange={(val, _i) => setEthnicity(val)}
-					textInputProps={{ style: [ styles.input, styles.iconPadding ] }}
-					Icon={() => <ChevronDown />}
-					items={itemizeList(ethnicities)}
-				/>
-
-				<View style={styles.row}>
-					<View style={{ width: '48%' }}>
-						<InputLabel text="Gender" />
-						<RNPickerSelect
-							value={gender}
-							onValueChange={(val, _i) => setGender(val)}
-							placeholder={selectPlaceholder}
-							textInputProps={{ style: [ styles.input, styles.iconPadding ] }}
-							Icon={() => <ChevronDown />}
-							items={itemizeList(genders)}
-						/>
-					</View>
-
-					<View style={{ width: '48%' }}>
-						<InputLabel text="Transportation" />
-						<RNPickerSelect
-							value={transportationMethod}
-							onValueChange={(val, _i) => setTransportationMethod(val)}
-							placeholder={selectPlaceholder}
-							textInputProps={{ style: styles.input }}
-							Icon={() => <ChevronDown />}
-							items={itemizeList(transportationMethods)}
-						/>
-					</View>
-				</View>
-
-				<FormImageInput
-					text="Income Verification"
-					image={incomeImage}
-					setImage={setIncomeImage}
-				/>
-
-				<SpacerInline height={10} />
-				<View style={styles.checkboxRow}>
-					<View style={styles.checkBox}>
-						<Checkbox
-							status={termsOfService ? 'checked' : 'unchecked'}
-							onPress={toggleTermsOfService}
-							color={colors.NAVY_BLUE}
-							uncheckedColor="white"
-						/>
-					</View>
-					<SpacerInline width={10} />
-					<Text style={styles.text}>Accept</Text>
-					<SpacerInline width={10} />
-					<View style={{ top: 9 }}>
-						<LinkButton
-							text="Terms of Service"
-							destination="TermsScreen"
-						/>
-					</View>
+				<View style={{ width: '48%' }}>
+					<InputLabel text="Transportation" />
+					<RNPickerSelect
+						value={transportationMethod}
+						onValueChange={(val, _i) => setTransportationMethod(val)}
+						placeholder={selectPlaceholder}
+						textInputProps={{ style: styles.input }}
+						Icon={() => <ChevronDown />}
+						items={itemizeList(transportationMethods)}
+						disabled={!editing}
+					/>
 				</View>
 			</View>
 
+			{editing ? (
+				<View>
+					<InputLabel text="Password" />
+					<View style={styles.passwordContainer}>
+						<View style={{ flex: 8 }}>
+							<TextInput
+								textContentType="password"
+								value={password}
+								secureTextEntry={hidePwd}
+								onChangeText={setPassword}
+								style={[ styles.input, styles.iconPadding ]}
+								autoCapitalize="none"
+								autoCorrect={false}
+							/>
+						</View>
+						<View style={styles.iconContainer}>
+							<TouchableWithoutFeedback
+								onPress={() => setHidePwd(!hidePwd)}
+							>
+								<Icon name={hidePwd ? 'lock' : 'unlock'} style={styles.icon} />
+							</TouchableWithoutFeedback>
+						</View>
+					</View>
+					<InputLabel text="Confirm Password" />
+					<View style={styles.passwordContainer}>
+						<View style={{ flex: 8 }}>
+							<TextInput
+								textContentType="password"
+								value={confirmPassword}
+								secureTextEntry={hidePwd}
+								onChangeText={setConfirmPassword}
+								style={[ styles.input, styles.iconPadding ]}
+								autoCapitalize="none"
+								autoCorrect={false}
+							/>
+						</View>
+						<View style={styles.iconContainer}>
+							<TouchableWithoutFeedback
+								onPress={() => setHidePwd(!hidePwd)}
+							>
+								<Icon name={hidePwd ? 'lock' : 'unlock'} style={styles.icon} />
+							</TouchableWithoutFeedback>
+						</View>
+					</View>
+				</View>
+			) : null}
+
 			<View>
-				<SpacerInline height={20} />
+				{/* TODO: Componentize-- used in both client/donor registration screen and client/donor profile screen */}
+				<SpacerInline height={15} />
 				<LinkButton
-					text="Register"
-					onPress={validateAndSubmit}
+					text={editing ? 'Save' : 'Edit'}
+					onPress={editing ? validateAndSubmit : () => setEditing(!editing)}
 				/>
 				<SpacerInline height={40} />
 			</View>
